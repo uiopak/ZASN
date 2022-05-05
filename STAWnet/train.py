@@ -9,10 +9,11 @@ import wandb
 
 wandb.init(project="test-project-stawnet", entity="pg-test-zasn", config={
   "learning_rate": 0.001,
-  "epochs": 16,
+  "epochs": 12,
   "batch_size": 64,
   "dropout": 0.3,
-  "weight_decay": 0.0001
+  "weight_decay": 0.0001,
+  "emb_length": 16
 })
 
 config = wandb.config
@@ -30,7 +31,7 @@ parser.add_argument('--randomadj',default=True,help='whether random initialize a
 parser.add_argument('--seq_length',type=int,default=12,help='')
 parser.add_argument('--nhid',type=int,default=32,help='')
 parser.add_argument('--emb_length',type=int,default=16,help='node embedding length')
-parser.add_argument('--in_dim',type=int,default=3 ,help='inputs dimension')
+parser.add_argument('--in_dim',type=int,default=2 ,help='inputs dimension')
 parser.add_argument('--num_nodes',type=int,default=207,help='number of nodes, METR:207, PEMS:325')
 parser.add_argument('--batch_size',type=int,default=64,help='batch size')
 parser.add_argument('--learning_rate',type=float,default=0.001,help='learning rate')
@@ -69,7 +70,7 @@ def main():
 
     engine = trainer(scaler, args.in_dim, args.seq_length, args.num_nodes, args.nhid, config.dropout,
                          config.learning_rate, config.weight_decay, device, args.gat_bool, args.addaptadj,
-                         adjinit, args.aptonly, args.emb_length, args.noapt)
+                         adjinit, args.aptonly, config.emb_length, args.noapt)
 
 
     print("start training...",flush=True)

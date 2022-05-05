@@ -12,6 +12,10 @@ parameters:
     distribution: int_uniform
     min: 32
     max: 128
+  emb_length:
+    distribution: int_uniform
+    min: 8
+    max: 32
   weight_decay:
     distribution: uniform
     min: 0.00005
