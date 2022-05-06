@@ -23,7 +23,7 @@ from torch.utils.tensorboard import SummaryWriter
 parser = argparse.ArgumentParser()
 parser.add_argument('--device',type=str,default='cuda:0',help='')
 parser.add_argument('--data',type=str,default='data/METR-LA',help='data path')
-parser.add_argument('--gat_bool',default=True,help='whether to add graph attention layer')
+parser.add_argument('--gat_bool',default=False,help='whether to add graph attention layer')
 parser.add_argument('--aptonly',default=False,help='whether only use node embedding to do attention')
 parser.add_argument('--noapt',default=False,help='whether not use node embedding to do attention')
 parser.add_argument('--addaptadj',default=True,help='whether add adaptive adj')
