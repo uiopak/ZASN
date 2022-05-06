@@ -8,11 +8,11 @@ from engine import trainer
 import wandb
 
 wandb.init(project="test-project-graph-wavenet", entity="pg-test-zasn", config={
-  "learning_rate": 0.0015,
+  "learning_rate": 0.001608,
   "epochs": 100,
-  "batch_size": 64,
-  "dropout": 0.3,
-  "weight_decay": 0.00015
+  "batch_size": 102,
+  "dropout": 0.2425,
+  "weight_decay": 0.00009206
 })
 
 config = wandb.config
@@ -37,7 +37,7 @@ parser.add_argument('--weight_decay',type=float,default=0.0001,help='weight deca
 parser.add_argument('--epochs',type=int,default=100,help='')
 parser.add_argument('--print_every',type=int,default=50,help='')
 #parser.add_argument('--seed',type=int,default=99,help='random seed')
-parser.add_argument('--save',type=str,default='./garage/metrtest1',help='save path')
+parser.add_argument('--save',type=str,default='./garage/metrtest2',help='save path')
 parser.add_argument('--expid',type=int,default=1,help='experiment id')
 
 args = parser.parse_args()
