@@ -9,7 +9,7 @@ import wandb
 
 wandb.init(project="test-project-graph-wavenet2", entity="pg-test-zasn", config={
   "learning_rate": 0.001,
-  "epochs": 100,
+  "epochs": 12,
   "batch_size": 64,
   "dropout": 0.3,
   "weight_decay": 0.0001,
@@ -41,7 +41,7 @@ parser.add_argument('--weight_decay',type=float,default=config.weight_decay,help
 parser.add_argument('--epochs',type=int,default=config.epochs,help='')
 parser.add_argument('--print_every',type=int,default=50,help='')
 #parser.add_argument('--seed',type=int,default=99,help='random seed')
-parser.add_argument('--save',type=str,default='./garage/metrtestdef2',help='save path')
+parser.add_argument('--save',type=str,default='./garage/metrtest2test',help='save path')
 parser.add_argument('--expid',type=int,default=1,help='experiment id')
 
 args = parser.parse_args()
