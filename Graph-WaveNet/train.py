@@ -7,12 +7,16 @@ import matplotlib.pyplot as plt
 from engine import trainer
 import wandb
 
-wandb.init(project="test-project-graph-wavenet", entity="pg-test-zasn", config={
+wandb.init(project="test-project-graph-wavenet2", entity="pg-test-zasn", config={
   "learning_rate": 0.001,
   "epochs": 100,
   "batch_size": 64,
   "dropout": 0.3,
-  "weight_decay": 0.0001
+  "weight_decay": 0.0001,
+  "gcn_bool": True,
+  "aptonly": True,
+  "addaptadj": True,
+  "randomadj": True,
 })
 
 config = wandb.config
@@ -22,19 +26,19 @@ parser.add_argument('--device',type=str,default='cuda:0',help='')
 parser.add_argument('--data',type=str,default='data/METR-LA',help='data path')
 parser.add_argument('--adjdata',type=str,default='data/sensor_graph/adj_mx.pkl',help='adj data path')
 parser.add_argument('--adjtype',type=str,default='doubletransition',help='adj type')
-parser.add_argument('--gcn_bool',action='store_true',help='whether to add graph convolution layer')
-parser.add_argument('--aptonly',action='store_true',help='whether only adaptive adj')
-parser.add_argument('--addaptadj',action='store_true',help='whether add adaptive adj')
-parser.add_argument('--randomadj',action='store_true',help='whether random initialize adaptive adj')
+parser.add_argument('--gcn_bool',default=config.gcn_bool,action='store_true',help='whether to add graph convolution layer')
+parser.add_argument('--aptonly',default=config.aptonly,action='store_true',help='whether only adaptive adj')
+parser.add_argument('--addaptadj',default=config.addaptadj,action='store_true',help='whether add adaptive adj')
+parser.add_argument('--randomadj',default=config.randomadj,action='store_true',help='whether random initialize adaptive adj')
 parser.add_argument('--seq_length',type=int,default=12,help='')
 parser.add_argument('--nhid',type=int,default=32,help='')
 parser.add_argument('--in_dim',type=int,default=2,help='inputs dimension')
 parser.add_argument('--num_nodes',type=int,default=207,help='number of nodes')
-parser.add_argument('--batch_size',type=int,default=64,help='batch size')
-parser.add_argument('--learning_rate',type=float,default=0.001,help='learning rate')
-parser.add_argument('--dropout',type=float,default=0.3,help='dropout rate')
-parser.add_argument('--weight_decay',type=float,default=0.0001,help='weight decay rate')
-parser.add_argument('--epochs',type=int,default=100,help='')
+parser.add_argument('--batch_size',type=int,default=config.batch_size,help='batch size')
+parser.add_argument('--learning_rate',type=float,default=config.learning_rate,help='learning rate')
+parser.add_argument('--dropout',type=float,default=config.dropout,help='dropout rate')
+parser.add_argument('--weight_decay',type=float,default=config.weight_decay,help='weight decay rate')
+parser.add_argument('--epochs',type=int,default=config.epochs,help='')
 parser.add_argument('--print_every',type=int,default=50,help='')
 #parser.add_argument('--seed',type=int,default=99,help='random seed')
 parser.add_argument('--save',type=str,default='./garage/metrtestdef2',help='save path')
@@ -58,18 +62,18 @@ def main():
 
     print(args)
 
-    if args.randomadj:
+    if config.randomadj:
         adjinit = None
     else:
         adjinit = supports[0]
 
-    if args.aptonly:
+    if config.aptonly:
         supports = None
 
 
 
     engine = trainer(scaler, args.in_dim, args.seq_length, args.num_nodes, args.nhid, config.dropout,
-                         config.learning_rate, config.weight_decay, device, supports, args.gcn_bool, args.addaptadj,
+                         config.learning_rate, config.weight_decay, device, supports, config.gcn_bool, config.addaptadj,
                          adjinit)
 
 
