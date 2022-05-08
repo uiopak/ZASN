@@ -23,7 +23,7 @@ from torch.utils.tensorboard import SummaryWriter
 parser = argparse.ArgumentParser()
 parser.add_argument('--device',type=str,default='cuda:0',help='')
 parser.add_argument('--data',type=str,default='data/METR-LA',help='data path')
-parser.add_argument('--gat_bool',default=True,help='whether to add graph attention layer')
+parser.add_argument('--gat_bool',default=False,help='whether to add graph attention layer')
 parser.add_argument('--aptonly',default=False,help='whether only use node embedding to do attention')
 parser.add_argument('--noapt',default=False,help='whether not use node embedding to do attention')
 parser.add_argument('--addaptadj',default=True,help='whether add adaptive adj')
@@ -40,7 +40,7 @@ parser.add_argument('--weight_decay',type=float,default=0.0001,help='weight deca
 parser.add_argument('--epochs',type=int,default=100,help='')
 parser.add_argument('--print_every',type=int,default=50,help='')
 #parser.add_argument('--seed',type=int,default=99,help='random seed')
-parser.add_argument('--save',type=str,default='./garage/metrtest23',help='save path')
+parser.add_argument('--save',type=str,default='./garage/metrtestnoattention2',help='save path')
 parser.add_argument('--expid',type=int,default=1,help='experiment id')
 
 args = parser.parse_args()
