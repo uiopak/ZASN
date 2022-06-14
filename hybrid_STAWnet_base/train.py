@@ -10,15 +10,15 @@ from distutils.util import strtobool
 
 wandb.init(project="test-hybrid", allow_val_change=True, entity="pg-test-zasn",config={
   "learning_rate": 0.001905,
-  "epochs": 100,
-  "batch_size": 8,
+  "epochs": 12,
+  "batch_size": 64,
   "emb_length": 32,
   "dropout": 0.4005,
   "weight_decay": 0.00008885,
   "gcn_bool": True,
   "gat_bool": True,
-  "gcn_blocks": 1,
-  "gat_blocks": 3,
+  "gcn_blocks": 1, # ignore in sweep
+  "gat_blocks": 3, 
   "aptonly": False,
   "addaptadj": True,
   "randomadj": False,
@@ -51,8 +51,10 @@ parser.add_argument('--dropout',type=float,default=config.dropout,help='dropout 
 parser.add_argument('--weight_decay',type=float,default=config.weight_decay,help='weight decay rate')
 parser.add_argument('--epochs',type=int,default=config.epochs,help='')
 parser.add_argument('--print_every',type=int,default=50,help='')
+parser.add_argument('--gat_blocks',type=int,default=3,help='')
+parser.add_argument('--gcn_blocks',type=int,default=1,help='')
 #parser.add_argument('--seed',type=int,default=99,help='random seed')
-parser.add_argument('--save',type=str,default='./garage/metrtestnoattention2',help='save path')
+parser.add_argument('--save',type=str,default='./garage/metrtesthybridsweep',help='save path')
 parser.add_argument('--expid',type=int,default=1,help='experiment id')
 
 args = parser.parse_args()
@@ -61,6 +63,7 @@ wandb.config.update({
     "gcn_bool":args.gcn_bool,
     "gat_bool":args.gat_bool,
     "aptonly":args.aptonly,
+    "gcn_blocks": 4 - config.gat_blocks,
     "addaptadj":args.addaptadj,
     "randomadj":args.randomadj
 },allow_val_change=True);
@@ -79,19 +82,19 @@ def main():
 
     print(args)
 
-    if args.randomadj:
+    if config.randomadj:
         adjinit = None
     else:
         adjinit = supports[0]
 
-    if args.aptonly:
+    if config.aptonly:
         supports = None
 
 
 
-    engine = trainer(scaler, config.gat_blocks, config.gcn_blocks, args.in_dim, args.seq_length, args.num_nodes, args.nhid, config.dropout,
-                         config.learning_rate, config.weight_decay, device, args.gat_bool, args.gcn_bool, args.addaptadj,
-                         adjinit, args.aptonly, config.emb_length, args.noapt, supports=supports)
+    engine = trainer(scaler, config.gat_blocks, 4 - config.gat_blocks, args.in_dim, args.seq_length, args.num_nodes, args.nhid, config.dropout,
+                         config.learning_rate, config.weight_decay, device, config.gat_bool, config.gcn_bool, config.addaptadj,
+                         adjinit, config.aptonly, config.emb_length, args.noapt, supports=supports)
 
 
     print("start training...",flush=True)
@@ -220,6 +223,13 @@ def main():
     wandb.summary['test_MAE'] = np.mean(amae)
     wandb.summary['test_MAPE'] = np.mean(amape)
     wandb.summary['test_RMSE'] = np.mean(armse)
+    for i in range(args.seq_length):
+        my_string = 'test_horizon_{:d}_amae'
+        wandb.summary[my_string.format(i+1)] = amae[i]
+        my_string = 'test_horizon_{:d}_amape'
+        wandb.summary[my_string.format(i+1)] = amape[i]
+        my_string = 'test_horizon_{:d}_armse'
+        wandb.summary[my_string.format(i+1)] = armse[i]
     print(log.format(np.mean(amae),np.mean(amape),np.mean(armse)))
     torch.save(engine.model.state_dict(), args.save+"_exp"+str(args.expid)+"_best_"+str(round(his_loss[bestid],2))+"_"+str(config.learning_rate)+"_"+str(config.batch_size)+"_"+str(config.dropout)+"_"+str(config.dropout)+".pth")
 
