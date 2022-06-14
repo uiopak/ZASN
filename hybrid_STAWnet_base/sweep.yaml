@@ -1,0 +1,26 @@
+program: train.py
+method: bayes
+metric:
+  name: val/val_loss
+  goal: minimize
+parameters:
+  dropout:
+    distribution: uniform
+    min: 0.15
+    max: 0.6
+  batch_size:
+    distribution: int_uniform
+    min: 32
+    max: 128
+  emb_length:
+    distribution: int_uniform
+    min: 8
+    max: 32
+  weight_decay:
+    distribution: uniform
+    min: 0.00005
+    max: 0.0002
+  learning_rate:
+    distribution: uniform
+    min: 0.0005
+    max: 0.002
