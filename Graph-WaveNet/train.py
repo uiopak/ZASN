@@ -1,3 +1,4 @@
+from distutils.util import strtobool
 import torch
 import numpy as np
 import argparse
@@ -7,7 +8,7 @@ import matplotlib.pyplot as plt
 from engine import trainer
 import wandb
 
-wandb.init(project="test-project-graph-wavenet2", entity="pg-test-zasn", config={
+wandb.init(project="test-project-graph-wavenet2",allow_val_change=True, entity="pg-test-zasn",config={
   "learning_rate": 0.001905,
   "epochs": 100,
   "batch_size": 64,
@@ -26,10 +27,10 @@ parser.add_argument('--device',type=str,default='cuda:0',help='')
 parser.add_argument('--data',type=str,default='data/METR-LA',help='data path')
 parser.add_argument('--adjdata',type=str,default='data/sensor_graph/adj_mx.pkl',help='adj data path')
 parser.add_argument('--adjtype',type=str,default='doubletransition',help='adj type')
-parser.add_argument('--gcn_bool',default=config.gcn_bool,action='store_true',help='whether to add graph convolution layer')
-parser.add_argument('--aptonly',default=config.aptonly,action='store_true',help='whether only adaptive adj')
-parser.add_argument('--addaptadj',default=config.addaptadj,action='store_true',help='whether add adaptive adj')
-parser.add_argument('--randomadj',default=config.randomadj,action='store_true',help='whether random initialize adaptive adj')
+parser.add_argument('--gcn_bool',default=config.gcn_bool,type=lambda x: bool(strtobool(str(x))),help='whether to add graph convolution layer')
+parser.add_argument('--aptonly',default=config.aptonly,type=lambda x: bool(strtobool(str(x))),help='whether only adaptive adj')
+parser.add_argument('--addaptadj',default=config.addaptadj,type=lambda x: bool(strtobool(str(x))),help='whether add adaptive adj')
+parser.add_argument('--randomadj',default=config.randomadj,type=lambda x: bool(strtobool(str(x))),help='whether random initialize adaptive adj')
 parser.add_argument('--seq_length',type=int,default=12,help='')
 parser.add_argument('--nhid',type=int,default=32,help='')
 parser.add_argument('--in_dim',type=int,default=2,help='inputs dimension')
@@ -41,11 +42,16 @@ parser.add_argument('--weight_decay',type=float,default=config.weight_decay,help
 parser.add_argument('--epochs',type=int,default=config.epochs,help='')
 parser.add_argument('--print_every',type=int,default=50,help='')
 #parser.add_argument('--seed',type=int,default=99,help='random seed')
-parser.add_argument('--save',type=str,default='./garage/metr-wavenet-def2',help='save path')
+parser.add_argument('--save',type=str,default='./garage/metr-wavenet-tests',help='save path')
 parser.add_argument('--expid',type=int,default=1,help='experiment id')
 
 args = parser.parse_args()
-
+wandb.config.update({
+    "gcn_bool":args.gcn_bool,
+    "aptonly":args.aptonly,
+    "addaptadj":args.addaptadj,
+    "randomadj":args.randomadj
+},allow_val_change=True);
 
 
 
