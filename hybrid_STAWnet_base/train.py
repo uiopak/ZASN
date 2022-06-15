@@ -9,16 +9,16 @@ import wandb
 from distutils.util import strtobool
 
 wandb.init(project="test-hybrid", allow_val_change=True, entity="pg-test-zasn",config={
-  "learning_rate": 0.001905,
-  "epochs": 12,
-  "batch_size": 64,
+  "learning_rate": 0.001872 ,
+  "epochs": 100,
+  "batch_size": 32,
   "emb_length": 32,
-  "dropout": 0.4005,
-  "weight_decay": 0.00008885,
+  "dropout": 0.4158,
+  "weight_decay": 0.0001457,
   "gcn_bool": True,
   "gat_bool": True,
-  "gcn_blocks": 1, # ignore in sweep
-  "gat_blocks": 3, 
+  "gcn_blocks": 3, # ignore in sweep
+  "gat_blocks": 1, 
   "aptonly": False,
   "addaptadj": True,
   "randomadj": False,
@@ -54,7 +54,7 @@ parser.add_argument('--print_every',type=int,default=50,help='')
 parser.add_argument('--gat_blocks',type=int,default=3,help='')
 parser.add_argument('--gcn_blocks',type=int,default=1,help='')
 #parser.add_argument('--seed',type=int,default=99,help='random seed')
-parser.add_argument('--save',type=str,default='./garage/metrtesthybridsweep',help='save path')
+parser.add_argument('--save',type=str,default='./garage/metrtesthybridtrain1',help='save path')
 parser.add_argument('--expid',type=int,default=1,help='experiment id')
 
 args = parser.parse_args()
@@ -63,7 +63,8 @@ wandb.config.update({
     "gcn_bool":args.gcn_bool,
     "gat_bool":args.gat_bool,
     "aptonly":args.aptonly,
-    "gcn_blocks": 4 - config.gat_blocks,
+    "gat_blocks":args.gat_blocks,
+    "gcn_blocks": 4 - args.gat_blocks,
     "addaptadj":args.addaptadj,
     "randomadj":args.randomadj
 },allow_val_change=True);
